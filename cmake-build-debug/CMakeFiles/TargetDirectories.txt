@@ -1,0 +1,4 @@
+B:/Server/cmake-build-debug/CMakeFiles/server.dir
+B:/Server/cmake-build-debug/CMakeFiles/client.dir
+B:/Server/cmake-build-debug/CMakeFiles/edit_cache.dir
+B:/Server/cmake-build-debug/CMakeFiles/rebuild_cache.dir
