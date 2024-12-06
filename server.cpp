@@ -33,10 +33,11 @@ int clientIDCounter = 1;
 ofstream logFile("server.log", ios::app); // Файл для логування
 mutex clientMutex;
 
+// Функція для запису повідомлень до лог-файлу
 void logMessage(const string& message) {
     lock_guard<mutex> lock(clientMutex);
     logFile << message << endl;
-    cout << message << endl;
+    cout << message << endl; // Одночасно виводимо на консоль
 }
 
 void broadcastClientList() {
@@ -48,6 +49,7 @@ void broadcastClientList() {
     for (const auto& client : clients) {
         send(client.second, (char*)clientList.c_str(), clientList.size() * sizeof(wchar_t), 0);
     }
+    logMessage("Sent updated client list to all clients.");
 }
 
 void handleClient(int clientID, SOCKET clientSocket) {
@@ -63,15 +65,18 @@ void handleClient(int clientID, SOCKET clientSocket) {
         if (!(ss >> targetID) || !getline(ss, message)) {
             wstring errorMessage = L"Invalid message format. Use <TargetID> <Message>.";
             send(clientSocket, (char*)errorMessage.c_str(), errorMessage.size() * sizeof(wchar_t), 0);
+            logMessage("Client " + to_string(clientID) + " sent an invalid message.");
             continue;
         }
 
         if (clients.find(targetID) != clients.end()) {
             wstring fullMessage = L"Message from " + to_wstring(clientID) + L": " + message;
             send(clients[targetID], (char*)fullMessage.c_str(), fullMessage.size() * sizeof(wchar_t), 0);
+            logMessage("Message from client " + to_string(clientID) + " to client " + to_string(targetID) + ": " + string(message.begin(), message.end()));
         } else {
             wstring errorMessage = L"Client ID " + to_wstring(targetID) + L" not found.";
             send(clientSocket, (char*)errorMessage.c_str(), errorMessage.size() * sizeof(wchar_t), 0);
+            logMessage("Client " + to_string(clientID) + " tried to send a message to non-existent client ID " + to_string(targetID));
         }
     }
 

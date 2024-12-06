@@ -18,3 +18,10 @@ Client 2 disconnected.
 Client 3 connected.
 Client 1 disconnected.
 Client 3 disconnected.
+Server started. Waiting for clients...
+Client 1 connected.
+Sent updated client list to all clients.
+Client 2 connected.
+Sent updated client list to all clients.
+Client 2 sent an invalid message.
+Message from client 2 to client 1:  Hello, bro
