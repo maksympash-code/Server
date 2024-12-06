@@ -108,6 +108,40 @@ build client.exe: CXX_EXECUTABLE_LINKER__client_Debug CMakeFiles/client.dir/clie
   TARGET_IMPLIB = libclient.dll.a
   TARGET_PDB = client.exe.dbg
 
+# =============================================================================
+# Object build statements for EXECUTABLE target test
+
+
+#############################################
+# Order-only phony target for test
+
+build cmake_object_order_depends_target_test: phony || .
+
+build CMakeFiles/test.dir/test.cpp.obj: CXX_COMPILER__test_unscanned_Debug B$:/Server/test.cpp || cmake_object_order_depends_target_test
+  DEP_FILE = CMakeFiles\test.dir\test.cpp.obj.d
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\test.dir
+  OBJECT_FILE_DIR = CMakeFiles\test.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target test
+
+
+#############################################
+# Link the executable test.exe
+
+build test.exe: CXX_EXECUTABLE_LINKER__test_Debug CMakeFiles/test.dir/test.cpp.obj
+  FLAGS = -g
+  LINK_FLAGS = -Wl,-subsystem,console
+  LINK_LIBRARIES = -lws2_32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  OBJECT_DIR = CMakeFiles\test.dir
+  POST_BUILD = cd .
+  PRE_LINK = cd .
+  TARGET_FILE = test.exe
+  TARGET_IMPLIB = libtest.dll.a
+  TARGET_PDB = test.exe.dbg
+
 
 #############################################
 # Utility command for edit_cache
@@ -138,6 +172,8 @@ build client: phony client.exe
 
 build server: phony server.exe
 
+build test: phony test.exe
+
 # =============================================================================
 # Folder targets.
 
@@ -146,7 +182,7 @@ build server: phony server.exe
 #############################################
 # Folder: B:/Server/cmake-build-debug
 
-build all: phony server.exe client.exe
+build all: phony server.exe client.exe test.exe
 
 # =============================================================================
 # Built-in targets

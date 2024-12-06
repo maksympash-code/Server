@@ -1,0 +1,11 @@
+Connected to server. Message: Your Client ID is 1
+Received from server: CLIENTS: 1 
+Received from server: CLIENTS: 1 2 
+Connected to server. Message: Your Client ID is 2
+Received from server: CLIENTS: 1 2 
+Sent message: 1
+Received from server: Invalid message format. Use <TargetID> <Message>.
+Sent message: 1 Hello, bro
+Received from server: Message from 2:  Hello, bro
+Error receiving message. Error code: 10054
+Sent message: -1

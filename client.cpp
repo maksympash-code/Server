@@ -3,12 +3,6 @@
 #include <string>
 #include <thread>
 #include <locale>
-#include <codecvt>
-#include <fstream>
-
-#pragma comment(lib, "ws2_32.lib")
-
-using namespace std;
 
 /*
  * client.cpp
@@ -17,17 +11,16 @@ using namespace std;
  *
  * Опис:
  * Цей файл реалізує клієнтську частину програми для обміну повідомленнями.
- * Додано логування у файл client.log для відстеження подій.
  */
 
-ofstream logFile("client.log", ios::app);
+#pragma comment(lib, "ws2_32.lib")
 
-// Функція для запису повідомлень до лог-файлу
-void logMessage(const string& message) {
-    logFile << message << endl;
-    cout << message << endl; // Одночасно виводимо на екран
-}
+using namespace std;
 
+/**
+ * Функція для прийому повідомлень від сервера
+ * @param clientSocket Сокет клієнта
+ */
 void receiveMessages(SOCKET clientSocket) {
     wchar_t buffer[1024];
     int bytesReceived;
@@ -36,14 +29,12 @@ void receiveMessages(SOCKET clientSocket) {
         bytesReceived = recv(clientSocket, (char*)buffer, sizeof(buffer), 0);
         if (bytesReceived > 0) {
             buffer[bytesReceived / sizeof(wchar_t)] = L'\0';
-            wstring message(buffer);
-            wcout << L"Received from server: " << message << endl;
-            logMessage("Received from server: " + string(message.begin(), message.end()));
+            wcout << L"Received from server: " << buffer << endl;
         } else if (bytesReceived == 0) {
-            logMessage("Connection closed by server.");
+            cout << "Connection closed by server." << endl;
             break;
         } else {
-            logMessage("Error receiving message. Error code: " + to_string(WSAGetLastError()));
+            cerr << "Error receiving message. Error code: " << WSAGetLastError() << endl;
             break;
         }
     }
@@ -69,7 +60,7 @@ int main() {
     serverAddress.sin_port = htons(54000);
 
     if (connect(clientSocket, (sockaddr*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) {
-        logMessage("Failed to connect to server. Error code: " + to_string(WSAGetLastError()));
+        cerr << "Failed to connect to server. Error code: " << WSAGetLastError() << endl;
         closesocket(clientSocket);
         WSACleanup();
         return 1;
@@ -79,24 +70,29 @@ int main() {
     int bytesReceived = recv(clientSocket, (char*)buffer, sizeof(buffer), 0);
     if (bytesReceived > 0) {
         buffer[bytesReceived / sizeof(wchar_t)] = L'\0';
-        wcout << L"Server says: " << buffer << endl;
-        logMessage("Connected to server. Message: " + string(buffer, buffer + wcslen(buffer)));
+        wcout << L"Server: " << buffer << endl;
     }
 
     thread receiveThread(receiveMessages, clientSocket);
     receiveThread.detach();
 
+    wstring message;
     while (true) {
-        wcout << L"Enter target client ID and message: ";
-        wstring input;
-        getline(wcin, input);
+        int targetID;
+        wcout << "Enter the target client ID (or -1 to exit): ";
+        wcin >> targetID;
+        wcin.ignore();
 
-        send(clientSocket, (char*)input.c_str(), input.size() * sizeof(wchar_t), 0);
-        logMessage("Sent message: " + string(input.begin(), input.end()));
+        if (targetID == -1) break;
+
+        wcout << "Enter message: ";
+        getline(wcin, message);
+
+        wstring fullMessage = to_wstring(targetID) + L" " + message;
+        send(clientSocket, (char*)fullMessage.c_str(), fullMessage.size() * sizeof(wchar_t), 0);
     }
 
     closesocket(clientSocket);
     WSACleanup();
-    logFile.close();
     return 0;
 }

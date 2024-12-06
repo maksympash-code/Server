@@ -25,3 +25,74 @@ Client 2 connected.
 Sent updated client list to all clients.
 Client 2 sent an invalid message.
 Message from client 2 to client 1:  Hello, bro
+Server started. Waiting for clients...
+Client 1 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Client 2 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Client 1 disconnected.
+Client 2 connected.
+Client 2 disconnected.
+Client 3 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Client 2 connected.
+Client 2 sent an invalid message format.
+Client 1 disconnected.
+Server started. Waiting for clients...
+Server started. Waiting for clients...
+Client 1 connected.
+Client 1 sent an invalid message format.
+Client 1 sent an invalid message format.
+Client 1 sent an invalid message format.
+Server started. Waiting for clients...
+Client 1 connected.
+Client 1 disconnected.
+Server started. Waiting for clients...
+Client 1 connected.
+Client 1 sent an invalid message format.
+Client 2 connected.
+Client 2 sent an invalid message format.
+Client 2 sent an invalid message format.
+Client 2 disconnected.
+Client 1 disconnected.
+Client 3 connected.
+Client 3 tried to send a message to non-existent client 2
+Client 4 connected.
+Client 4 tried to send a message to non-existent client 2
+Client 4 tried to send a message to non-existent client 2
+Server started. Waiting for clients...
+Client 1 connected.
+Client 2 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Client 1 disconnected.
+Client 2 connected.
+Client 2 disconnected.
+Client 3 connected.
+Client 3 disconnected.
+Client 4 connected.
+Client 5 connected.
+Server started. Waiting for clients...
+Client 1 connected.
+Client 1 disconnected.
+Client 2 connected.
+Server started. Waiting for clients...
+Server started. Waiting for clients...
+Client 1 connected.
+Server started. Waiting for clients...
+Client 1 connected.
