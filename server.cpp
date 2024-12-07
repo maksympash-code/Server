@@ -104,14 +104,15 @@ void handleClient(int clientID, SOCKET clientSocket) {
  * Основна функція сервера
  * Запускає сервер, приймає клієнтів і створює для кожного потік обробки.
  */
-
 int main() {
+    // 1. Ініціалізація Winsock
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         cerr << "Failed to initialize Winsock. Error code: " << WSAGetLastError() << endl;
         return 1;
     }
 
+    // 2. Створення сокету для сервера
     SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (serverSocket == INVALID_SOCKET) {
         cerr << "Failed to create server socket. Error code: " << WSAGetLastError() << endl;
@@ -119,11 +120,13 @@ int main() {
         return 1;
     }
 
+    // 3. Налаштування адреси сервера
     sockaddr_in serverAddress;
-    serverAddress.sin_family = AF_INET;
-    serverAddress.sin_addr.s_addr = INADDR_ANY;
-    serverAddress.sin_port = htons(54000);
+    serverAddress.sin_family = AF_INET;         // Використовуємо IPv4
+    serverAddress.sin_addr.s_addr = INADDR_ANY; // Приймаємо з будь-якої адреси
+    serverAddress.sin_port = htons(54000);      // Встановлюємо порт 54000
 
+    // 4. Прив'язка сокета до адреси і порту
     if (bind(serverSocket, (sockaddr*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) {
         cerr << "Bind failed. Error code: " << WSAGetLastError() << endl;
         closesocket(serverSocket);
@@ -131,6 +134,7 @@ int main() {
         return 1;
     }
 
+    // 5. Переведення сервера у режим прослуховування
     if (listen(serverSocket, SOMAXCONN) == SOCKET_ERROR) {
         cerr << "Listen failed. Error code: " << WSAGetLastError() << endl;
         closesocket(serverSocket);
@@ -140,7 +144,9 @@ int main() {
 
     logMessage("Server started. Waiting for clients...");
 
+    // 6. Основний цикл обробки клієнтів
     while (true) {
+        // Очікування підключення клієнта
         sockaddr_in clientAddress;
         int clientSize = sizeof(clientAddress);
         SOCKET clientSocket = accept(serverSocket, (sockaddr*)&clientAddress, &clientSize);
@@ -149,6 +155,7 @@ int main() {
             continue;
         }
 
+        // Призначення ID клієнту
         int clientID = clientIDCounter++;
         {
             lock_guard<mutex> lock(clientMutex);
@@ -156,16 +163,19 @@ int main() {
         }
         logMessage("Client " + to_string(clientID) + " connected.");
 
-        // Надсилаємо клієнту його ID
+        // Надсилання клієнту його ID
         wstring welcomeMessage = L"Your Client ID is " + to_wstring(clientID);
         send(clientSocket, (char*)welcomeMessage.c_str(), welcomeMessage.size() * sizeof(wchar_t), 0);
 
-        broadcastClientList(); // Оновлення списку клієнтів
+        // Оновлення списку клієнтів
+        broadcastClientList();
 
-        thread clientThread(handleClient, clientID, clientSocket); // Створення потоку для обробки клієнта
-        clientThread.detach(); // Відокремлення потоку
+        // Запуск нового потоку для обробки клієнта
+        thread clientThread(handleClient, clientID, clientSocket);
+        clientThread.detach(); // Відокремлення потоку для незалежної роботи
     }
 
+    // 7. Закриття сервера
     closesocket(serverSocket);
     WSACleanup();
     logFile.close();
